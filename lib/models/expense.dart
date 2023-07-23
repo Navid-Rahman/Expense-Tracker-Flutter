@@ -1,9 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();
+
+final formatter = DateFormat.yMd();
 
 enum Category {
   food,
@@ -32,4 +35,8 @@ class Expense {
   final DateTime date;
   final String id;
   final String title;
+
+  String get formattedDate {
+    return formatter.format(date);
+  }
 }

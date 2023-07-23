@@ -16,6 +16,12 @@ enum Category {
 }
 
 const categoryIcons = {
+  // Category.food: Image(
+  //   width: 60,
+  //   image: AssetImage(
+  //     'assets/icons/hot-pot.png',
+  //   ),
+  // ),
   Category.food: Icons.dinner_dining,
   Category.travel: Icons.flight_takeoff,
   Category.leisure: Icons.movie_filter,

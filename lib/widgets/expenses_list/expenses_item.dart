@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:expense_tracker/main.dart';
 import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/models/expense.dart';
@@ -20,8 +21,12 @@ class ExpenseItem extends StatelessWidget {
           vertical: 16,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(expense.title),
+            Text(
+              expense.title,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(
               height: 4,
             ),
@@ -31,7 +36,10 @@ class ExpenseItem extends StatelessWidget {
                 const Spacer(),
                 Row(
                   children: [
-                    Icon(categoryIcons[expense.category]),
+                    Icon(
+                      categoryIcons[expense.category],
+                      color: kColorScheme.onPrimaryContainer,
+                    ),
                     const SizedBox(width: 8),
                     Text(expense.formattedDate),
                   ],

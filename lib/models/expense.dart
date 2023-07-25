@@ -1,13 +1,15 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
+// Importing required libraries
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+// Generating unique IDs using the Uuid library
 const uuid = Uuid();
 
+// Date formatter for displaying formatted dates
 final formatter = DateFormat.yMd();
 
+// Enum representing different expense categories
 enum Category {
   food,
   travel,
@@ -15,6 +17,7 @@ enum Category {
   work,
 }
 
+// Map associating each category with its corresponding icon (using built-in icons)
 const categoryIcons = {
   // Category.food: Image(
   //   width: 60,
@@ -28,6 +31,7 @@ const categoryIcons = {
   Category.work: Icons.work,
 };
 
+// Class representing an individual expense item
 class Expense {
   Expense({
     required this.amount,
@@ -36,23 +40,26 @@ class Expense {
     required this.title,
   }) : id = uuid.v4();
 
-  final double amount;
-  final Category category;
-  final DateTime date;
-  final String id;
-  final String title;
+  final double amount; // Amount of the expense
+  final Category category; // Category of the expense
+  final DateTime date; // Date of the expense
+  final String id; // Unique ID for the expense
+  final String title; // Title of the expense
 
+  // Method to get the formatted date as a string
   String get formattedDate {
     return formatter.format(date);
   }
 }
 
+// Class representing a collection of expenses with a specific category
 class ExpenseBucket {
   ExpenseBucket({
     required this.category,
     required this.expenses,
   });
 
+  // Constructor for creating an expense bucket for a specific category
   ExpenseBucket.forCategory(
     List<Expense> allExpenses,
     this.category,
@@ -60,14 +67,14 @@ class ExpenseBucket {
             .where((expense) => expense.category == category)
             .toList();
 
-  final Category category;
-  final List<Expense> expenses;
+  final Category category; // Category of the expenses in this bucket
+  final List<Expense> expenses; // List of expenses in this bucket
 
+  // Method to calculate the total expenses for this category
   double get totalExpenses {
     double sum = 0;
 
     for (final expense in expenses) {
-      //sum = sum + expense.amount;
       sum += expense.amount;
     }
     return sum;

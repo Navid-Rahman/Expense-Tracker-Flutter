@@ -1,8 +1,8 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// Importing required libraries
 import 'package:flutter/material.dart';
-
 import 'package:expense_tracker/models/expense.dart';
 
+// A StatefulWidget that represents the 'Add Expense' overlay
 class NewExpense extends StatefulWidget {
   const NewExpense({
     Key? key,
@@ -15,13 +15,19 @@ class NewExpense extends StatefulWidget {
   State<NewExpense> createState() => _NewExpenseState();
 }
 
+// The State class for the NewExpense widget
 class _NewExpenseState extends State<NewExpense> {
+  // Text editing controllers for the input fields
   final _amountController = TextEditingController();
-  Category _selectedCategory = Category.leisure;
-  DateTime? _selectedDate;
   final _titleController = TextEditingController();
 
-//! After calling a TextEditingController to store a input data, then dispose the data after finishing. Unless, this widget will be active always.
+  // Enum value to store the selected expense category
+  Category _selectedCategory = Category.leisure;
+
+  // Variable to store the selected date
+  DateTime? _selectedDate;
+
+  // Method to dispose of the text editing controllers to avoid memory leaks
   @override
   void dispose() {
     _titleController.dispose();
@@ -29,6 +35,7 @@ class _NewExpenseState extends State<NewExpense> {
     super.dispose();
   }
 
+  // Method to present the date picker when the date icon is pressed
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
@@ -43,25 +50,25 @@ class _NewExpenseState extends State<NewExpense> {
     setState(() {
       _selectedDate = pickedDate;
     });
-
-    //this line
   }
 
+  // Method to submit the expense data when the 'Save Expense' button is pressed
   void _submitExpenseData() {
-    final enteredAmount = double.tryParse(_amountController
-        .text); //* tryParse("Hello") => null, tryParse("1.12") => 1.12
+    // Parsing the entered amount to a double
+    final enteredAmount = double.tryParse(_amountController.text);
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
 
+    // Validating the user inputs
     if (_titleController.text.trim().isEmpty ||
         amountIsInvalid ||
         _selectedDate == null) {
-      //TODO: Show error message
+      // Showing an error dialog if any input is invalid
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Invalid Input'),
           content: const Text(
-              'Please make sure a valid title, amount, date and category was entered.'),
+              'Please make sure a valid title, amount, date, and category were entered.'),
           actions: [
             TextButton(
               onPressed: () {
@@ -75,6 +82,7 @@ class _NewExpenseState extends State<NewExpense> {
       return;
     }
 
+    // Creating a new Expense object with the provided data
     widget.onAddExpense(
       Expense(
         amount: enteredAmount,
@@ -83,6 +91,8 @@ class _NewExpenseState extends State<NewExpense> {
         title: _titleController.text,
       ),
     );
+
+    // Closing the 'Add Expense' overlay
     Navigator.pop(context);
   }
 
@@ -92,21 +102,22 @@ class _NewExpenseState extends State<NewExpense> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+          // Input field for the expense title
           TextField(
             controller: _titleController,
-            //onChanged: _saveTitleInput,
             maxLength: 50,
             keyboardType: TextInputType.name,
             decoration: const InputDecoration(
               label: Text('Title'),
             ),
           ),
+          // Row containing the amount input field and date picker
           Row(
             children: [
+              // Input field for the expense amount
               Expanded(
                 child: TextField(
                   controller: _amountController,
-                  //onChanged: _saveTitleInput,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixText: '\$ ',
@@ -117,6 +128,7 @@ class _NewExpenseState extends State<NewExpense> {
               const SizedBox(
                 width: 16,
               ),
+              // Date picker widget to select the expense date
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -127,7 +139,7 @@ class _NewExpenseState extends State<NewExpense> {
                           ? 'No date selected'
                           : formatter.format(_selectedDate!),
                     ),
-                    //? Using (!)  to force dart to assume that the value will never be 'null'
+                    // IconButton to trigger the date picker
                     IconButton(
                       onPressed: _presentDatePicker,
                       icon: const Icon(Icons.calendar_month),
@@ -140,8 +152,10 @@ class _NewExpenseState extends State<NewExpense> {
           const SizedBox(
             height: 16,
           ),
+          // Row containing the category dropdown and 'Cancel'/'Save Expense' buttons
           Row(
             children: [
+              // DropdownButton to select the expense category
               DropdownButton(
                 value: _selectedCategory,
                 items: Category.values
@@ -164,6 +178,7 @@ class _NewExpenseState extends State<NewExpense> {
                 },
               ),
               const Spacer(),
+              // 'Cancel' button to close the 'Add Expense' overlay
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -173,6 +188,7 @@ class _NewExpenseState extends State<NewExpense> {
               const SizedBox(
                 width: 5,
               ),
+              // 'Save Expense' button to submit the expense data
               ElevatedButton(
                 onPressed: _submitExpenseData,
                 child: const Text('Save Expense'),

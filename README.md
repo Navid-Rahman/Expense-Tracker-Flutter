@@ -23,7 +23,6 @@ The Expense Tracker App is a simple Flutter application that allows users to tra
 - Screenshot 3
   ![Screenshot_1690268870](https://github.com/Navid-Rahman/Expense-Tracker-Flutter/assets/77515075/8dca7457-0465-477d-8171-24c11a12d146)
 
-
 ## Installation
 
 1. Make sure you have Flutter SDK installed on your system.
@@ -47,14 +46,15 @@ The Expense Tracker app offers a user-friendly interface to add and manage expen
 You can customize the app's theme by modifying the color schemes defined in the main.dart file. The kColorScheme and kDarkColorScheme variables define the color schemes for the light and dark themes, respectively.
 
 Copy code
-'''dart
+
+```dart
 var kColorScheme =
 ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 96, 59, 181));
 
 var kDarkColorScheme = ColorScheme.fromSeed(
 brightness: Brightness.dark,
 seedColor: const Color.fromARGB(255, 5, 99, 125));
-'''
+```
 
 ## Dependencies
 

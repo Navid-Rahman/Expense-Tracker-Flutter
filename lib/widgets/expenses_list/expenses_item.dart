@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:expense_tracker/main.dart';
 import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/models/expense.dart';
@@ -14,6 +13,14 @@ class ExpenseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //* For Dark Mode
+    final isDarkMode =
+        MediaQuery.of(context).platformBrightness == Brightness.dark;
+
+    //* For Light Mode
+    // final isLightMode =
+    //     MediaQuery.of(context).platformBrightness == Brightness.light;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -38,7 +45,12 @@ class ExpenseItem extends StatelessWidget {
                   children: [
                     Icon(
                       categoryIcons[expense.category],
-                      color: kColorScheme.onPrimaryContainer,
+                      color: isDarkMode
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.7),
                     ),
                     const SizedBox(width: 8),
                     Text(expense.formattedDate),

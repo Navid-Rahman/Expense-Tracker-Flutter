@@ -1,4 +1,7 @@
 // Importing required libraries
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/models/expense.dart';
 
@@ -53,17 +56,25 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
-  // Method to submit the expense data when the 'Save Expense' button is pressed
-  void _submitExpenseData() {
-    // Parsing the entered amount to a double
-    final enteredAmount = double.tryParse(_amountController.text);
-    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
-
-    // Validating the user inputs
-    if (_titleController.text.trim().isEmpty ||
-        amountIsInvalid ||
-        _selectedDate == null) {
-      // Showing an error dialog if any input is invalid
+  void _showDialog() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: const Text('Invalid Input'),
+          content: const Text(
+              'Please make sure a valid title, amount, date, and category were entered.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Ok'),
+            ),
+          ],
+        ),
+      );
+    } else {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -80,6 +91,22 @@ class _NewExpenseState extends State<NewExpense> {
           ],
         ),
       );
+    }
+  }
+
+  // Method to submit the expense data when the 'Save Expense' button is pressed
+  void _submitExpenseData() {
+    // Parsing the entered amount to a double
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+
+    // Validating the user inputs
+    if (_titleController.text.trim().isEmpty ||
+        amountIsInvalid ||
+        _selectedDate == null) {
+      // Showing an error dialog if any input is invalid
+      _showDialog();
+
       return;
     }
 

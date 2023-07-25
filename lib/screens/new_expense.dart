@@ -1,6 +1,4 @@
-// Importing required libraries
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/models/expense.dart';
@@ -20,18 +18,11 @@ class NewExpense extends StatefulWidget {
 
 // The State class for the NewExpense widget
 class _NewExpenseState extends State<NewExpense> {
-  // Text editing controllers for the input fields
   final _amountController = TextEditingController();
-
-  // Enum value to store the selected expense category
+  final _titleController = TextEditingController();
   Category _selectedCategory = Category.leisure;
-
-  // Variable to store the selected date
   DateTime? _selectedDate;
 
-  final _titleController = TextEditingController();
-
-  // Method to dispose of the text editing controllers to avoid memory leaks
   @override
   void dispose() {
     _titleController.dispose();
@@ -56,14 +47,18 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
+  // Method to show the error dialog when there are invalid inputs
   void _showDialog() {
+    const content = Text(
+      'Please make sure a valid title, amount, date, and category were entered.',
+    );
+
     if (Platform.isIOS) {
       showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
           title: const Text('Invalid Input'),
-          content: const Text(
-              'Please make sure a valid title, amount, date, and category were entered.'),
+          content: content,
           actions: [
             TextButton(
               onPressed: () {
@@ -79,8 +74,7 @@ class _NewExpenseState extends State<NewExpense> {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Invalid Input'),
-          content: const Text(
-              'Please make sure a valid title, amount, date, and category were entered.'),
+          content: content,
           actions: [
             TextButton(
               onPressed: () {
@@ -96,21 +90,16 @@ class _NewExpenseState extends State<NewExpense> {
 
   // Method to submit the expense data when the 'Save Expense' button is pressed
   void _submitExpenseData() {
-    // Parsing the entered amount to a double
     final enteredAmount = double.tryParse(_amountController.text);
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
 
-    // Validating the user inputs
     if (_titleController.text.trim().isEmpty ||
         amountIsInvalid ||
         _selectedDate == null) {
-      // Showing an error dialog if any input is invalid
       _showDialog();
-
       return;
     }
 
-    // Creating a new Expense object with the provided data
     widget.onAddExpense(
       Expense(
         amount: enteredAmount,
@@ -120,229 +109,231 @@ class _NewExpenseState extends State<NewExpense> {
       ),
     );
 
-    // Closing the 'Add Expense' overlay
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+    final width = MediaQuery.of(context).size.width;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
+    return SizedBox(
+      height: double.infinity,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16, keyboardSpace + 16),
+          child: Column(
+            children: [
+              _buildTitleAndAmountField(
+                  width), // Build the title and amount fields
+              const SizedBox(height: 16),
+              _buildCategoryAndDatePickerField(
+                  width), // Build the category and date picker fields
+              const SizedBox(height: 16),
+              _buildActionButtons(
+                  width), // Build the action buttons (Cancel and Save Expense)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-        return SizedBox(
-          height: double.infinity,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, keyboardSpace + 16),
-              child: Column(
-                children: [
-// First Row
-                  if (width >= 600)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _titleController,
-                            maxLength: 50,
-                            keyboardType: TextInputType.name,
-                            decoration: const InputDecoration(
-                              label: Text('Title'),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: _amountController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              prefixText: '\$ ',
-                              label: Text('Amount'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  else
-                    // Input field for the expense title
-                    TextField(
-                      controller: _titleController,
-                      maxLength: 50,
-                      keyboardType: TextInputType.name,
-                      decoration: const InputDecoration(
-                        label: Text('Title'),
-                      ),
-                    ),
-
-// Second Row
-                  if (width >= 600)
-                    Row(
-                      children: [
-                        DropdownButton(
-                          value: _selectedCategory,
-                          items: Category.values
-                              .map(
-                                (category) => DropdownMenuItem(
-                                  value: category,
-                                  child: Text(
-                                    category.name.toUpperCase(),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            if (value == null) {
-                              return;
-                            }
-                            setState(() {
-                              _selectedCategory = value;
-                            });
-                          },
-                        ),
-                        const SizedBox(
-                          width: 24,
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                _selectedDate == null
-                                    ? 'No date selected'
-                                    : formatter.format(_selectedDate!),
-                              ),
-                              // IconButton to trigger the date picker
-                              IconButton(
-                                onPressed: _presentDatePicker,
-                                icon: const Icon(Icons.calendar_month),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  else
-                    // Row containing the amount input field and date picker
-                    Row(
-                      children: [
-                        // Input field for the expense amount
-                        Expanded(
-                          child: TextField(
-                            controller: _amountController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              prefixText: '\$ ',
-                              label: Text('Amount'),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        // Date picker widget to select the expense date
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                _selectedDate == null
-                                    ? 'No date selected'
-                                    : formatter.format(_selectedDate!),
-                              ),
-                              // IconButton to trigger the date picker
-                              IconButton(
-                                onPressed: _presentDatePicker,
-                                icon: const Icon(Icons.calendar_month),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-
-// Third Row
-                  if (width >= 600)
-                    Row(
-                      children: [
-                        const Spacer(),
-                        // 'Cancel' button to close the 'Add Expense' overlay
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        // 'Save Expense' button to submit the expense data
-                        ElevatedButton(
-                          onPressed: _submitExpenseData,
-                          child: const Text('Save Expense'),
-                        ),
-                      ],
-                    )
-                  else
-                    // Row containing the category dropdown and 'Cancel'/'Save Expense' buttons
-                    Row(
-                      children: [
-                        // DropdownButton to select the expense category
-                        DropdownButton(
-                          value: _selectedCategory,
-                          items: Category.values
-                              .map(
-                                (category) => DropdownMenuItem(
-                                  value: category,
-                                  child: Text(
-                                    category.name.toUpperCase(),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            if (value == null) {
-                              return;
-                            }
-                            setState(() {
-                              _selectedCategory = value;
-                            });
-                          },
-                        ),
-                        const Spacer(),
-                        // 'Cancel' button to close the 'Add Expense' overlay
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        // 'Save Expense' button to submit the expense data
-                        ElevatedButton(
-                          onPressed: _submitExpenseData,
-                          child: const Text('Save Expense'),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
+  // Widget to build the title and amount fields
+  Widget _buildTitleAndAmountField(double width) {
+    if (width >= 600) {
+      // For wider screens, show the fields side by side in a row
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _buildTextField(
+              controller: _titleController,
+              maxLength: 50,
+              keyboardType: TextInputType.name,
+              labelText: 'Title',
             ),
           ),
-        );
-      },
+          const SizedBox(width: 24),
+          Expanded(
+            child: _buildTextField(
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              prefixText: '\$ ',
+              labelText: 'Amount',
+              maxLength: 1000,
+            ),
+          ),
+        ],
+      );
+    } else {
+      // For smaller screens, show only the title field
+      return _buildTextField(
+        controller: _titleController,
+        maxLength: 50,
+        keyboardType: TextInputType.name,
+        labelText: 'Title',
+      );
+    }
+  }
+
+  // Widget to build the category and date picker fields
+  Widget _buildCategoryAndDatePickerField(double width) {
+    if (width >= 600) {
+      // For wider screens, show the fields side by side in a row
+      return Row(
+        children: [
+          DropdownButton(
+            value: _selectedCategory,
+            items: Category.values
+                .map(
+                  (category) => DropdownMenuItem(
+                    value: category,
+                    child: Text(category.name.toUpperCase()),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              if (value == null) {
+                return;
+              }
+              setState(() {
+                _selectedCategory = value;
+              });
+            },
+          ),
+          const SizedBox(width: 24),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  _selectedDate == null
+                      ? 'No date selected'
+                      : formatter.format(_selectedDate!),
+                ),
+                IconButton(
+                  onPressed: _presentDatePicker,
+                  icon: const Icon(Icons.calendar_month),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      // For smaller screens, show the category field and date picker below each other
+      return Row(
+        children: [
+          Expanded(
+            child: _buildTextField(
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              prefixText: '\$ ',
+              labelText: 'Amount',
+              maxLength: 1000,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  _selectedDate == null
+                      ? 'No date selected'
+                      : formatter.format(_selectedDate!),
+                ),
+                IconButton(
+                  onPressed: _presentDatePicker,
+                  icon: const Icon(Icons.calendar_month),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  // Widget to build a text field
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required int maxLength,
+    required TextInputType keyboardType,
+    String? prefixText,
+    required String labelText,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLength: maxLength,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        prefixText: prefixText,
+        label: Text(labelText),
+      ),
     );
+  }
+
+  // Widget to build the action buttons (Cancel and Save Expense)
+  Widget _buildActionButtons(double width) {
+    if (width >= 600) {
+      // For wider screens, show the buttons side by side in a row
+      return Row(
+        children: [
+          const Spacer(),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          const SizedBox(width: 5),
+          ElevatedButton(
+            onPressed: _submitExpenseData,
+            child: const Text('Save Expense'),
+          ),
+        ],
+      );
+    } else {
+      // For smaller screens, show the buttons below each other
+      return Row(
+        children: [
+          DropdownButton(
+            value: _selectedCategory,
+            items: Category.values
+                .map(
+                  (category) => DropdownMenuItem(
+                    value: category,
+                    child: Text(category.name.toUpperCase()),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              if (value == null) {
+                return;
+              }
+              setState(() {
+                _selectedCategory = value;
+              });
+            },
+          ),
+          const Spacer(),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          const SizedBox(width: 5),
+          ElevatedButton(
+            onPressed: _submitExpenseData,
+            child: const Text('Save Expense'),
+          ),
+        ],
+      );
+    }
   }
 }

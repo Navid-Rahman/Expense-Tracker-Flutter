@@ -1,8 +1,10 @@
 // Importing necessary libraries
 import 'package:flutter/material.dart';
 
+import 'package:flutter/services.dart';
+
 // Importing the 'Expenses' widget
-import 'package:expense_tracker/widgets/expenses.dart';
+import 'package:expense_tracker/screens/expenses.dart';
 
 // Defining a custom color scheme for the light theme
 var kColorScheme =
@@ -15,6 +17,16 @@ var kDarkColorScheme = ColorScheme.fromSeed(
 
 // Main function where the app starts
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+  //     .then((fn) {
+  //   return null;
+
+  //   //? This makes sure the apps is locked, and it doesn't change the layout even if the screen is located.
+
+  //   //! Instead of returning null we can run the whole runApp inside the 'then(fn)' function, which will make sure the app rotation is locked up.
+  // });
+
   // Running the app within a 'SafeArea' widget to ensure content avoids system UI elements
   runApp(
     SafeArea(

@@ -33,7 +33,8 @@ class ExpensesList extends StatelessWidget {
           // Callback when an item is dismissed (swiped to delete)
           onRemoveExpense(expenses[index]);
         },
-        child: ExpenseItem(expenses[index]), // Displaying the ExpenseItem widget for each expense
+        child: ExpenseItem(expenses[
+            index]), // Displaying the ExpenseItem widget for each expense
       ),
     );
   }

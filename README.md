@@ -12,8 +12,14 @@ The Expense Tracker App is a simple Flutter application that allows users to tra
 
 ## Screenshots
 - Screenshot 1
+  ![Screenshot_1690268813](https://github.com/Navid-Rahman/Expense-Tracker-Flutter/assets/77515075/82d2b152-5da7-4eac-bbc1-ad40d18a7a6c)
+
 - Screenshot 2
+  ![Screenshot_1690268866](https://github.com/Navid-Rahman/Expense-Tracker-Flutter/assets/77515075/450c235f-d619-4f4a-826c-a05a57b1e2d2)
+
 - Screenshot 3
+  ![Screenshot_1690268870](https://github.com/Navid-Rahman/Expense-Tracker-Flutter/assets/77515075/8dca7457-0465-477d-8171-24c11a12d146)
+
 
 ## Installation
 1. Make sure you have Flutter SDK installed on your system.

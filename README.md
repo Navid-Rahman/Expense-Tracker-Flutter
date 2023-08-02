@@ -26,7 +26,7 @@ The Expense Tracker App is a simple Flutter application that allows users to tra
 ## Installation
 
 1. Make sure you have Flutter SDK installed on your system.
-2. Clone the repository: git clone 'https://github.com/username/expense_tracker.git'
+2. Clone the repository: git clone '[https://github.com/username/expense_tracker.git](https://github.com/Navid-Rahman/Expense-Tracker-Flutter.git)'
 3. Navigate to the project directory: **'cd expense_tracker'**
 4. Install dependencies: **'flutter pub get'**
 5. Run the app: **'flutter run'**
